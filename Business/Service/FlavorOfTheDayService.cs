@@ -4,12 +4,12 @@ using Domain.Interface;
 
 namespace Business;
 
-public class FlavorOfTheDay: IFlavorOfTheDay
+public class FlavorOfTheDayService: IFlavorOfTheDay
 {
     private readonly IHttpClientFactory _httpClientFactory;
 
     
-    public FlavorOfTheDay(IHttpClientFactory httpClientFactory)
+    public FlavorOfTheDayService(IHttpClientFactory httpClientFactory)
     {
         this._httpClientFactory = httpClientFactory;
     }

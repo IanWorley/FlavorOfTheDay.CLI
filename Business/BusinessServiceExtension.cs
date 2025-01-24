@@ -9,7 +9,7 @@ public static class BusinessServiceExtension
 public static IServiceCollection AddBusinessServices(this IServiceCollection services)
     {
         services.AddHttpClient();
-        services.AddTransient<IFlavorOfTheDay, FlavorOfTheDay>();
+        services.AddTransient<IFlavorOfTheDay, FlavorOfTheDayService>();
         return services;
     }
 }
