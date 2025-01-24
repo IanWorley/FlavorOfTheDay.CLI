@@ -11,6 +11,7 @@ public static class Program
     public static async Task<int>  Main(string[] args) => 
         await new CliApplicationBuilder()
             .AddCommandsFromThisAssembly()
+            .SetExecutableName("culvers-cli")
             .UseTypeActivator(commandTypes =>
             {
                 var services = new ServiceCollection();
