@@ -23,9 +23,6 @@ public class ZipCodeCommand: ICommand
 
     public async ValueTask ExecuteAsync(IConsole console)
     {
-        
-        
-
        await _flavorOfTheDay.GetFlavorOfTheDay(int.Parse(ZipCode), Limit).ContinueWith(
             task =>
             {

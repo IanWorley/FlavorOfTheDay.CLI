@@ -15,7 +15,6 @@ public static class Program
             {
                 var services = new ServiceCollection();
                 services.AddBusinessServices();
-;
                 foreach (var commandType in commandTypes)
                     services.AddTransient(commandType);
 
