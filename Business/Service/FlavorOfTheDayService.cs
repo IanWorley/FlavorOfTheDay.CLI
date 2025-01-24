@@ -14,7 +14,7 @@ public class FlavorOfTheDayService: IFlavorOfTheDay
         this._httpClientFactory = httpClientFactory;
     }
 
-    public async Task<Dictionary<string, string>> GetFlavorOfTheDay(int zipCode, int limit = 1)
+    public async Task<Dictionary<string, string>> GetFlavorOfTheDayAsync(int zipCode, int limit = 1)
     {
 
         var client = _httpClientFactory.CreateClient("FavorOfTheDayByZipLimit1");
