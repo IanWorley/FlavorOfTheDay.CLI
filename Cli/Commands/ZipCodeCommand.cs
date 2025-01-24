@@ -3,7 +3,7 @@ using CliFx.Attributes;
 using CliFx.Infrastructure;
 using Domain.Interface;
 
-namespace Command;
+namespace Culvers_cli.Commands;
 [Command(Description = "Finds Culver's flavor of the day Zip Code")]
 
 public class ZipCodeCommand: ICommand
