@@ -8,8 +8,8 @@ public static class CommonMocks
 
     public static HttpResponseMessage WorkingMockedJsonResponse()
     {
-        
-        return  new HttpResponseMessage
+
+        return new HttpResponseMessage
         {
 
             StatusCode = HttpStatusCode.OK,
@@ -35,6 +35,5 @@ public static class CommonMocks
             }))
         };
     }
-
-    }
+}
     

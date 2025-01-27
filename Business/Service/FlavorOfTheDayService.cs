@@ -1,6 +1,7 @@
 
 using System.Net.Http.Json;
 using Domain.Interface;
+using Microsoft.Extensions.Logging;
 
 namespace Business;
 
@@ -8,7 +9,6 @@ public class FlavorOfTheDayService: IFlavorOfTheDay
 {
     private readonly IHttpClientFactory _httpClientFactory;
 
-    
     public FlavorOfTheDayService(IHttpClientFactory httpClientFactory)
     {
         this._httpClientFactory = httpClientFactory;
@@ -17,6 +17,11 @@ public class FlavorOfTheDayService: IFlavorOfTheDay
     public async Task<Dictionary<string, string>> GetFlavorOfTheDayAsync(int zipCode, int limit = 1)
     {
 
+        if (limit <= 0)
+        {
+            throw new ArgumentException("Limit must be greater than 0");
+        }
+        
         var client = _httpClientFactory.CreateClient("FavorOfTheDayByZipLimit");
         var uri = new Uri($"https://web.culvers.com/api/locator/getLocations?location={zipCode}&limit={limit}");
 
