@@ -1,0 +1,132 @@
+name: Build release .NET Application
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  build-release-candidate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore --locked-mode
+
+      - name: Build application for Linux x64
+        run: |
+          dotnet publish ./Cli/Cli.csproj -c Release /p:PublishSingleFile=true \
+            /p:IncludeNativeLibrariesForSelfExtract=true  --self-contained true --os linux --arch x64
+      - name: Find Executable
+        run: echo "executable_name=Cli/bin/Release/net9.0/linux-x64/publish/Cli" >> $GITHUB_ENV
+
+      - name: Rename Executable
+        run: |
+          version="${GITHUB_REF##*/}"  # Extract version from tag
+          mv ${{ env.executable_name }} "FlavorOfTheDay.CLI_${version}"
+      - name: Zip Executable
+        run: |
+          version="${GITHUB_REF##*/}"  # Extract version from tag
+          zip_name="FlavorOfTheDayCLI_ubuntu-latest_x64_${version}.zip"
+          zip $zip_name "FlavorOfTheDay.CLI_${version}"
+
+      - name: Build application for Linux arm64
+        run: |
+          dotnet publish ./Cli/Cli.csproj -c Release /p:PublishSingleFile=true \
+            /p:IncludeNativeLibrariesForSelfExtract=true --self-contained true --os linux --arch arm64
+      - name: Find Executable
+        run: echo "executable_name=Cli/bin/Release/net9.0/linux-arm64/publish/Cli" >> $GITHUB_ENV
+
+      - name: Rename Executable
+        run: |
+          version="${GITHUB_REF##*/}"  # Extract version from tag
+          mv ${{ env.executable_name }} "FlavorOfTheDay.CLI_${version}"
+      - name: Zip Executable
+        run: |
+          version="${GITHUB_REF##*/}"  # Extract version from tag
+          zip_name="FlavorOfTheDayCLI_ubuntu-latest_arm64_${version}.zip"
+          zip $zip_name "FlavorOfTheDay.CLI_${version}"
+      - name: Build application for Windows x64
+        run: |
+          dotnet publish ./Cli/Cli.csproj -c Release /p:PublishSingleFile=true \
+            /p:IncludeNativeLibrariesForSelfExtract=true --self-contained true --os win --arch x64
+      - name: Find Executable
+        run: echo "executable_name=Cli/bin/Release/net9.0/win-x64/publish/Cli.exe" >> $GITHUB_ENV
+
+      - name: Rename Executable
+        run: |
+          version="${GITHUB_REF##*/}"  # Extract version from tag
+          mv ${{ env.executable_name }} "FlavorOfTheDay.CLI_${version}.exe"
+      - name: Zip Executable
+        run: |
+          version="${GITHUB_REF##*/}"  # Extract version from tag
+          zip_name="FlavorOfTheDayCLI_windows-latest_x64_${version}.zip"
+          zip $zip_name "FlavorOfTheDay.CLI_${version}.exe"
+      - name: Build application for Windows arm64
+        run: |
+          dotnet publish ./Cli/Cli.csproj -c Release /p:PublishSingleFile=true \
+            /p:IncludeNativeLibrariesForSelfExtract=true --self-contained true --os win --arch arm64
+      - name: Find Executable
+        run: echo "executable_name=Cli/bin/Release/net9.0/win-arm64/publish/Cli.exe" >> $GITHUB_ENV
+
+      - name: Rename Executable
+        run: |
+          version="${GITHUB_REF##*/}"  # Extract version from tag
+          mv ${{ env.executable_name }} "FlavorOfTheDay.CLI_${version}.exe"
+      - name: Zip Executable
+        run: |
+          version="${GITHUB_REF##*/}"  # Extract version from tag
+          zip_name="FlavorOfTheDayCLI_windows-latest_arm64_${version}.zip"
+          zip $zip_name "FlavorOfTheDay.CLI_${version}.exe"
+      - name: Build application for macOS x64
+        run: |
+          dotnet publish ./Cli/Cli.csproj -c Release /p:PublishSingleFile=true \
+            /p:IncludeNativeLibrariesForSelfExtract=true  --self-contained true --os osx --arch x64
+      - name: Find Executable
+        run: echo "executable_name=Cli/bin/Release/net9.0/osx-x64/publish/Cli" >> $GITHUB_ENV
+
+      - name: Rename Executable
+        run: |
+          version="${GITHUB_REF##*/}"  # Extract version from tag
+          mv ${{ env.executable_name }} "FlavorOfTheDay.CLI_${version}"
+      - name: Zip Executable
+        run: |
+          version="${GITHUB_REF##*/}"  # Extract version from tag
+          zip_name="FlavorOfTheDayCLI_macos-latest_x64_${version}.zip"
+          zip $zip_name "FlavorOfTheDay.CLI_${version}"
+
+      - name: Build application for macOS arm64
+        run: |
+          dotnet publish ./Cli/Cli.csproj -c Release /p:PublishSingleFile=true \
+            /p:IncludeNativeLibrariesForSelfExtract=true --self-contained true -a arm64 --os osx
+      - name: Find Executable
+        run: echo "executable_name=Cli/bin/Release/net9.0/osx-arm64/publish/Cli" >> $GITHUB_ENV
+
+      - name: Rename Executable
+        run: |
+          version="${GITHUB_REF##*/}"  # Extract version from tag
+          mv ${{ env.executable_name }} "FlavorOfTheDay.CLI_${version}"
+      - name: Zip Executable
+        run: |
+          version="${GITHUB_REF##*/}"  # Extract version from tag
+          zip_name="FlavorOfTheDayCLI_macos-latest_arm64_${version}.zip"
+          zip $zip_name "FlavorOfTheDay.CLI_${version}"
+
+      - name: Upload all zip files to pre-release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            FlavorOfTheDayCLI_ubuntu-latest_x64_${{ github.ref_name }}.zip
+            FlavorOfTheDayCLI_ubuntu-latest_arm64_${{ github.ref_name }}.zip
+            FlavorOfTheDayCLI_windows-latest_x64_${{ github.ref_name }}.zip
+            FlavorOfTheDayCLI_windows-latest_arm64_${{ github.ref_name }}.zip
+            FlavorOfTheDayCLI_macos-latest_x64_${{ github.ref_name }}.zip
+            FlavorOfTheDayCLI_macos-latest_arm64_${{ github.ref_name }}.zip
+          token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
