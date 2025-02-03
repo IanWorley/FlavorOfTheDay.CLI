@@ -10,7 +10,7 @@
 ## Usage
 
 ```sh
-FlavorOfTheDay 64029
+FlavorOfTheDay 64011
 ```
 
 ## Author
