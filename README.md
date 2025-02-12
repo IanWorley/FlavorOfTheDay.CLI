@@ -10,7 +10,7 @@
 ## Usage
 
 ```sh
-FlavorOfTheDay 64029
+FlavorOfTheDay 64011
 ```
 
 ## Author
@@ -36,3 +36,4 @@ This project is [MIT](https://raw.githubusercontent.com/IanWorley/FlavorOfTheDay
 
 ***
 _This README was generated with ❤️ by [readme-md-generator](https://github.com/kefranabg/readme-md-generator)_
+
