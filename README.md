@@ -34,6 +34,5 @@ Give a ⭐️ if this project helped you!
 Copyright © 2025 [Ian Worley](https://github.com/IanWorley).<br />
 This project is [MIT](https://raw.githubusercontent.com/IanWorley/FlavorOfTheDay.CLI/refs/heads/main/License) licensed.
 
-***
 _This README was generated with ❤️ by [readme-md-generator](https://github.com/kefranabg/readme-md-generator)_
 
