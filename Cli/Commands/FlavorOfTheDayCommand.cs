@@ -1,3 +1,5 @@
+using Business.Service;
+using Domain.Enum;
 using Domain.Interface;
 using Spectre.Console;
 using Spectre.Console.Cli;
@@ -6,27 +8,30 @@ namespace Culvers_cli.Commands;
 
 public class FlavorOfTheDayCommand : AsyncCommand<FlavorOfTheDayCommandSettings>
 {
-    private readonly IAnsiConsole _ansiConsole;
-    private readonly IFlavorOfTheDay _flavorOfTheDay;
+    private readonly IFlavorOfTheDayApiCall _flavorOfTheDayApiCall;
+    private readonly IFlavorOfTheDayCommandOutputFactory _flavorOfTheDayCommandOutputFactory;
 
-    public FlavorOfTheDayCommand(IFlavorOfTheDay flavorOfTheDay, IAnsiConsole ansiConsole)
+    public FlavorOfTheDayCommand(IFlavorOfTheDayApiCall flavorOfTheDayApiCall,
+        IFlavorOfTheDayCommandOutputFactory flavorOfTheDayCommandOutputFactory)
     {
-        _flavorOfTheDay = flavorOfTheDay;
-        _ansiConsole = ansiConsole;
+        _flavorOfTheDayApiCall = flavorOfTheDayApiCall;
+        _flavorOfTheDayCommandOutputFactory = flavorOfTheDayCommandOutputFactory;
     }
 
     public override async Task<int> ExecuteAsync(CommandContext context, FlavorOfTheDayCommandSettings settings)
     {
-        var flavors = await _flavorOfTheDay.GetFlavorOfTheDayAsync(int.Parse(settings.ZipCode), settings.Limit);
+        var apiCallResult =
+            await _flavorOfTheDayApiCall.GetFlavorOfTheDayAsync(int.Parse(settings.ZipCode), settings.Limit);
 
-        var table = new Table();
-        table.Centered();
-        table.AddColumn("[green]Address[/]");
-        table.AddColumn(":ice_cream:Flavor of the Day:ice_cream:");
+        var enumForTerminalColor = OutputColorEnum.Plain;
 
-        foreach (var flavor in flavors) table.AddRow(flavor.Key, flavor.Value);
+        if (settings.Color) enumForTerminalColor = OutputColorEnum.Color;
 
-        _ansiConsole.Write(table);
+
+        var commandOutput = _flavorOfTheDayCommandOutputFactory.GetCommandOutput(enumForTerminalColor);
+
+        commandOutput.DisplayFlavorOfTheDay(apiCallResult);
+
         return 0;
     }
 

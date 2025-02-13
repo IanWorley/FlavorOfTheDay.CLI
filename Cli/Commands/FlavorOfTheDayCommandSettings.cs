@@ -5,14 +5,14 @@ using Spectre.Console.Cli;
 
 namespace Culvers_cli.Commands;
 
-public sealed partial class FlavorOfTheDayCommandSettings : CommandSettings
+public sealed partial class FlavorOfTheDayCommandSettings : GlobalCommandSettings
 {
     [CommandArgument(0, "<ZIPCODE>")] public string ZipCode { get; set; } = string.Empty;
 
     [CommandOption("-l|--limit")]
     [DefaultValue(1)]
-    public int Limit { get; set; }
 
+    public int Limit { get; set; }
 
     public override ValidationResult Validate()
     {

@@ -14,7 +14,7 @@ public class FlavorOfTheDayCommandTest
         //Arrange
         IAnsiConsole ansiConsoleMock = new TestConsole();
 
-        var flavorOfTheDayMock = new Mock<IFlavorOfTheDay>();
+        var flavorOfTheDayMock = new Mock<IFlavorOfTheDayApiCall>();
         flavorOfTheDayMock.Setup(x => x.GetFlavorOfTheDayAsync(It.IsAny<int>(), It.IsAny<int>())).ReturnsAsync(
             new Dictionary<string, string>
             {
