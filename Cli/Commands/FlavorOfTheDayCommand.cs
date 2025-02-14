@@ -1,53 +1,43 @@
-using CliFx;
-using CliFx.Attributes;
-using CliFx.Infrastructure;
+using Business.Service;
+using Domain.Enum;
 using Domain.Interface;
 using Spectre.Console;
+using Spectre.Console.Cli;
 
 namespace Culvers_cli.Commands;
-[Command(Description = "Finds Culver's flavor of the day Zip Code")]
 
-public class FlavorOfTheDayCommand: ICommand
+public class FlavorOfTheDayCommand : AsyncCommand<FlavorOfTheDayCommandSettings>
 {
-    private IFlavorOfTheDay _flavorOfTheDay;
-    private IAnsiConsole _ansiConsole;
-    
-    [CommandParameter(0, Description = "You must provide a zip code")]
-    public required string ZipCode { get; init; }
+    private readonly IFlavorOfTheDayApiCall _flavorOfTheDayApiCall;
+    private readonly IFlavorOfTheDayWriterFactory _flavorOfTheDayWriterFactory;
 
-    [CommandOption("limit", 'l', Description = "Optional: Specify a limit of locations")]
-    public int Limit { get; init; } = 1;
-
-    public FlavorOfTheDayCommand(IFlavorOfTheDay flavorOfTheDay, IAnsiConsole ansiConsole)
+    public FlavorOfTheDayCommand(IFlavorOfTheDayApiCall flavorOfTheDayApiCall,
+        IFlavorOfTheDayWriterFactory flavorOfTheDayWriterFactory)
     {
-        this._flavorOfTheDay = flavorOfTheDay;
-        this._ansiConsole = ansiConsole;
+        _flavorOfTheDayApiCall = flavorOfTheDayApiCall;
+        _flavorOfTheDayWriterFactory = flavorOfTheDayWriterFactory;
     }
 
-    public async ValueTask ExecuteAsync(IConsole console)
+    public override async Task<int> ExecuteAsync(CommandContext context, FlavorOfTheDayCommandSettings settings)
     {
+        var apiCallResult =
+            await _flavorOfTheDayApiCall.GetFlavorOfTheDayAsync(int.Parse(settings.ZipCode), settings.Limit);
 
-        if (Limit == 0)
-        {
-            throw new ArgumentException("Limit must be greater than 0");
-        }
-        
-        var flavors = await _flavorOfTheDay.GetFlavorOfTheDayAsync(int.Parse(ZipCode), Limit);
-        
-        var table = new Table();
-        table.Centered();
-        table.AddColumn("[green]Address[/]");
-        table.AddColumn(":ice_cream:Flavor of the Day:ice_cream:");   
-        
-        foreach (var flavor in flavors)
-        {
-            
-                table.AddRow(flavor.Key, flavor.Value);
-            
-        }
-        
-        _ansiConsole.Write(table);
-        
+
+        var enumForTerminalColor = settings.Pretty ? WriterEnum.Pretty : WriterEnum.Plain;
+
+        var commandOutput = _flavorOfTheDayWriterFactory.GetWriter(enumForTerminalColor);
+
+        commandOutput.DisplayFlavorOfTheDay(apiCallResult);
+
+        return 0;
     }
 
+    public ValidationResult Validate(CommandContext context, CommandSettings settings)
+    {
+        if (settings is not FlavorOfTheDayCommandSettings flavorOfTheDayCommandSettings)
+            return ValidationResult.Error("Invalid settings type");
+
+        return flavorOfTheDayCommandSettings.Validate();
+    }
 }

@@ -5,7 +5,7 @@ using Tests.Utils;
 
 namespace Tests.Service;
 
-public class TestFlavorOfTheDayService
+public class TestFlavorOfTheDayApiCall
 {
     [Fact]
     public async Task GetFlavorOfTheDayAsync_ReturnsExpectedResult()
@@ -22,7 +22,7 @@ public class TestFlavorOfTheDayService
         var httpClient = new HttpClient(mockHttpMessageHandler.Object);
         var httpClientFactoryMock = new Mock<IHttpClientFactory>();
         httpClientFactoryMock.Setup(_ => _.CreateClient("FavorOfTheDayByZipLimit")).Returns(httpClient);
-        var service = new FlavorOfTheDayService(httpClientFactoryMock.Object);
+        var service = new FlavorOfTheDayApiCall(httpClientFactoryMock.Object);
 
         var result = await service.GetFlavorOfTheDayAsync(12345);
 
@@ -45,9 +45,6 @@ public class TestFlavorOfTheDayService
         ).ReturnsAsync(expectedResponse);
 
         await Assert.ThrowsAsync<ArgumentException>(() =>
-            new FlavorOfTheDayService(httpClientFactoryMock.Object).GetFlavorOfTheDayAsync(12345, -1));
-
+            new FlavorOfTheDayApiCall(httpClientFactoryMock.Object).GetFlavorOfTheDayAsync(12345, -1));
     }
-
-
 }
