@@ -1,6 +1,6 @@
 namespace Domain.Interface;
 
-public interface IFlavorOfTheDay
+public interface IFlavorOfTheDayApiCall
 {
     public Task<Dictionary<string, string>> GetFlavorOfTheDayAsync(int zipCode, int limit);
 }
