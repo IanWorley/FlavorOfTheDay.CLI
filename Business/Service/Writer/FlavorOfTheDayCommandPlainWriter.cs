@@ -3,12 +3,12 @@ using Spectre.Console;
 
 namespace Business.Service;
 
-public class FlavorOfTheDayCommandPlainOutput : IFlavorOfTheDayCommandOutput
+public class FlavorOfTheDayCommandPlainWriter : IFlavorOfTheDayWriter
 {
     private readonly IAnsiConsole _ansiConsole;
 
 
-    public FlavorOfTheDayCommandPlainOutput(IAnsiConsole ansiConsole)
+    public FlavorOfTheDayCommandPlainWriter(IAnsiConsole ansiConsole)
     {
         _ansiConsole = ansiConsole;
     }
@@ -32,8 +32,8 @@ public class FlavorOfTheDayCommandPlainOutput : IFlavorOfTheDayCommandOutput
             _ansiConsole.WriteLine($"{data.Key}: {data.Value}");
     }
 
-    public OutputColorEnum DetermineOutputColorEnum()
+    public WriterEnum DetermineOutputColorEnum()
     {
-        return OutputColorEnum.Plain;
+        return WriterEnum.Plain;
     }
 }

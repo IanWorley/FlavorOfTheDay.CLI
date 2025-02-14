@@ -6,12 +6,16 @@ namespace Culvers_cli.Commands;
 
 public abstract class GlobalCommandSettings : CommandSettings
 {
-    [CommandOption("--color|--Color|-c")]
+    [Description("Use color output and enhance the display")]
+    [CommandOption("--pretty|--Pretty|-p")]
     [DefaultValue(false)]
-    public bool Color { get; set; }
+    public bool Pretty { get; set; }
+
 
     public override ValidationResult Validate()
     {
+        if (Pretty)
+            return ValidationResult.Error("OneLine and Pretty cannot be used together.");
         return ValidationResult.Success();
     }
 }

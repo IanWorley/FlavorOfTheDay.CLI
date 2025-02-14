@@ -19,10 +19,14 @@ public class FlavorOfTheDayApiCall : IFlavorOfTheDayApiCall
         var client = _httpClientFactory.CreateClient("FavorOfTheDayByZipLimit");
         var uri = new Uri($"https://web.culvers.com/api/locator/getLocations?location={zipCode}&limit={limit}");
 
+
         var culverStoreResponse = await client.GetFromJsonAsync<CulversStoreResponse>(uri);
 
         if (culverStoreResponse == null || culverStoreResponse.Data == null)
             throw new Exception("No data returned from Culvers API");
+
+        if (culverStoreResponse.IsSuccessful == false)
+            throw new Exception("Culvers API could not find any stores for the given zip code");
 
 
         var storeAddressFlavorDay = culverStoreResponse.Data.Geofences.Select(

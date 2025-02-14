@@ -1,15 +1,14 @@
 using Domain.Enum;
-using Domain.Interface;
 using Spectre.Console;
 
 namespace Business.Service;
 
-public class FlavorOfTheDayCommandPrettyOutput : IFlavorOfTheDayCommandOutput
+public class FlavorOfTheDayCommandPrettyWriter : IFlavorOfTheDayWriter
 {
     private readonly IAnsiConsole _ansiConsole;
 
 
-    public FlavorOfTheDayCommandPrettyOutput(IAnsiConsole ansiConsole, IFlavorOfTheDayApiCall flavorOfTheDayApiCall)
+    public FlavorOfTheDayCommandPrettyWriter(IAnsiConsole ansiConsole)
     {
         _ansiConsole = ansiConsole;
     }
@@ -40,8 +39,8 @@ public class FlavorOfTheDayCommandPrettyOutput : IFlavorOfTheDayCommandOutput
         _ansiConsole.Write(table);
     }
 
-    public OutputColorEnum DetermineOutputColorEnum()
+    public WriterEnum DetermineOutputColorEnum()
     {
-        return OutputColorEnum.Color;
+        return WriterEnum.Pretty;
     }
 }

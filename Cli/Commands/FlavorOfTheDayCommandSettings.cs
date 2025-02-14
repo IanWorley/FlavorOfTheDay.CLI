@@ -7,8 +7,11 @@ namespace Culvers_cli.Commands;
 
 public sealed partial class FlavorOfTheDayCommandSettings : GlobalCommandSettings
 {
-    [CommandArgument(0, "<ZIPCODE>")] public string ZipCode { get; set; } = string.Empty;
+    [Description("Zip code to get the flavor of the day for a store")]
+    [CommandArgument(0, "<ZIPCODE>")]
+    public string ZipCode { get; set; } = string.Empty;
 
+    [Description("Limit the number of results")]
     [CommandOption("-l|--limit")]
     [DefaultValue(1)]
 

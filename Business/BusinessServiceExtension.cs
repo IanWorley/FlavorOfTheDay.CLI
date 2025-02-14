@@ -10,9 +10,9 @@ public static class BusinessServiceExtension
     {
         services.AddHttpClient();
         services.AddTransient<IFlavorOfTheDayApiCall, FlavorOfTheDayApiCall>();
-        services.AddSingleton<IFlavorOfTheDayCommandOutputFactory, FlavorOfTheDayCommandOutputFactory>();
-        services.AddTransient<IFlavorOfTheDayCommandOutput, FlavorOfTheDayCommandPlainOutput>();
-        services.AddTransient<IFlavorOfTheDayCommandOutput, FlavorOfTheDayCommandPrettyOutput>();
+        services.AddSingleton<IFlavorOfTheDayWriterFactory, FlavorOfTheDayCommandWriterFactory>();
+        services.AddTransient<IFlavorOfTheDayWriter, FlavorOfTheDayCommandPlainWriter>();
+        services.AddTransient<IFlavorOfTheDayWriter, FlavorOfTheDayCommandPrettyWriter>();
 
         return services;
     }

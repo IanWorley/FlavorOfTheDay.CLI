@@ -9,13 +9,13 @@ namespace Culvers_cli.Commands;
 public class FlavorOfTheDayCommand : AsyncCommand<FlavorOfTheDayCommandSettings>
 {
     private readonly IFlavorOfTheDayApiCall _flavorOfTheDayApiCall;
-    private readonly IFlavorOfTheDayCommandOutputFactory _flavorOfTheDayCommandOutputFactory;
+    private readonly IFlavorOfTheDayWriterFactory _flavorOfTheDayWriterFactory;
 
     public FlavorOfTheDayCommand(IFlavorOfTheDayApiCall flavorOfTheDayApiCall,
-        IFlavorOfTheDayCommandOutputFactory flavorOfTheDayCommandOutputFactory)
+        IFlavorOfTheDayWriterFactory flavorOfTheDayWriterFactory)
     {
         _flavorOfTheDayApiCall = flavorOfTheDayApiCall;
-        _flavorOfTheDayCommandOutputFactory = flavorOfTheDayCommandOutputFactory;
+        _flavorOfTheDayWriterFactory = flavorOfTheDayWriterFactory;
     }
 
     public override async Task<int> ExecuteAsync(CommandContext context, FlavorOfTheDayCommandSettings settings)
@@ -23,12 +23,10 @@ public class FlavorOfTheDayCommand : AsyncCommand<FlavorOfTheDayCommandSettings>
         var apiCallResult =
             await _flavorOfTheDayApiCall.GetFlavorOfTheDayAsync(int.Parse(settings.ZipCode), settings.Limit);
 
-        var enumForTerminalColor = OutputColorEnum.Plain;
 
-        if (settings.Color) enumForTerminalColor = OutputColorEnum.Color;
+        var enumForTerminalColor = settings.Pretty ? WriterEnum.Pretty : WriterEnum.Plain;
 
-
-        var commandOutput = _flavorOfTheDayCommandOutputFactory.GetCommandOutput(enumForTerminalColor);
+        var commandOutput = _flavorOfTheDayWriterFactory.GetWriter(enumForTerminalColor);
 
         commandOutput.DisplayFlavorOfTheDay(apiCallResult);
 
