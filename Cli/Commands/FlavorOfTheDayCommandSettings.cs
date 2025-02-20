@@ -14,8 +14,8 @@ public sealed partial class FlavorOfTheDayCommandSettings : GlobalCommandSetting
     [Description("Limit the number of results")]
     [CommandOption("-l|--limit")]
     [DefaultValue(1)]
-
     public int Limit { get; set; }
+
 
     public override ValidationResult Validate()
     {

@@ -1,5 +1,4 @@
-using Business.Service;
-using Domain.Enum;
+using Business.Service.CommandEffects;
 using Domain.Interface;
 using Spectre.Console;
 using Spectre.Console.Cli;
@@ -9,13 +8,10 @@ namespace Culvers_cli.Commands;
 public class FlavorOfTheDayCommand : AsyncCommand<FlavorOfTheDayCommandSettings>
 {
     private readonly IFlavorOfTheDayApiCall _flavorOfTheDayApiCall;
-    private readonly IFlavorOfTheDayWriterFactory _flavorOfTheDayWriterFactory;
 
-    public FlavorOfTheDayCommand(IFlavorOfTheDayApiCall flavorOfTheDayApiCall,
-        IFlavorOfTheDayWriterFactory flavorOfTheDayWriterFactory)
+    public FlavorOfTheDayCommand(IFlavorOfTheDayApiCall flavorOfTheDayApiCall)
     {
         _flavorOfTheDayApiCall = flavorOfTheDayApiCall;
-        _flavorOfTheDayWriterFactory = flavorOfTheDayWriterFactory;
     }
 
     public override async Task<int> ExecuteAsync(CommandContext context, FlavorOfTheDayCommandSettings settings)
@@ -24,11 +20,21 @@ public class FlavorOfTheDayCommand : AsyncCommand<FlavorOfTheDayCommandSettings>
             await _flavorOfTheDayApiCall.GetFlavorOfTheDayAsync(int.Parse(settings.ZipCode), settings.Limit);
 
 
-        var enumForTerminalColor = settings.Pretty ? WriterEnum.Pretty : WriterEnum.Plain;
+        var displayingEffectDecorator = new BaseEffect(new LoadCommandOutputICommandOutputEffect(apiCallResult));
 
-        var commandOutput = _flavorOfTheDayWriterFactory.GetWriter(enumForTerminalColor);
+        if (settings.Pretty)
+            displayingEffectDecorator = new PrettyEffect(displayingEffectDecorator);
 
-        commandOutput.DisplayFlavorOfTheDay(apiCallResult);
+        if (settings.OneLine) displayingEffectDecorator = new OneLineEffect(displayingEffectDecorator);
+
+
+        if (!settings.OneLine && !settings.Pretty)
+            displayingEffectDecorator = new NormalTextEffect(displayingEffectDecorator);
+
+        if (settings.Wide)
+            displayingEffectDecorator.ApplyEffectAsWide();
+        else
+            displayingEffectDecorator.ApplyEffect();
 
         return 0;
     }

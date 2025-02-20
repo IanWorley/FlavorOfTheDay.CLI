@@ -28,7 +28,7 @@ public class TestFlavorOfTheDayApiCall
 
         Assert.NotNull(result);
         Assert.Single(result);
-        Assert.Equal("123 Main St, Springfield, IL, 62701", result.Keys.First());
+        Assert.Equal("123 Main St, Springfield, IL 62701", result.First().StoreLocation.ToString());
     }
 
     [Fact]
